@@ -874,17 +874,16 @@ function doPost(e) {
 
 <script>
 var QA = (function() {
-  var CFG_KEY = 'qa_tm_cfg';
+  var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzszw4l5L-FnHJAb-q7M4VQ2z1T03apc0rLTRWLFE5RsxekdL7cwcz5LKago-_wySlt/exec';
   var DAT_KEY = 'qa_tm_dat';
-  var cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
+  var cfg = { url: SHEETS_URL };
   var dat = JSON.parse(localStorage.getItem(DAT_KEY) || '{}');
   var syncTimer;
 
   function init() {
     enhanceTables();
     injectModProgress();
-    var urlInput = document.getElementById('sheets-url');
-    if (cfg.url) urlInput.value = cfg.url;
+    document.getElementById('sheets-url').value = SHEETS_URL;
     loadData().then(function() {
       applyStates();
       calcProgress();
@@ -1072,9 +1071,8 @@ var QA = (function() {
 
   return {
     connect: function() {
-      var url = document.getElementById('sheets-url').value.trim();
+      var url = document.getElementById('sheets-url').value.trim() || SHEETS_URL;
       cfg.url = url;
-      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
       loadData().then(function() { applyStates(); calcProgress(); });
     },
     openModal: function() { document.getElementById('setup-modal').classList.add('show'); },
