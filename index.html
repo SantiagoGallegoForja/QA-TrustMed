@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Test Plan - TrustMed Finanzas</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+h1{text-align:center;padding:30px 0 10px;font-size:2em;color:#0f3460}
+.subtitle{text-align:center;color:#555;margin-bottom:30px;font-size:1.1em}
+.stats-bar{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+.stat-box{background:#fff;border-radius:10px;padding:15px 25px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.stat-box .num{font-size:2em;font-weight:700;color:#0f3460}
+.stat-box .label{font-size:.85em;color:#666}
+.module{background:#fff;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);overflow:hidden}
+.module-header{padding:18px 24px;cursor:pointer;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee}
+.module-header:hover{background:#f8f9ff}
+.module-header h2{flex:1;font-size:1.2em;color:#0f3460}
+.priority{padding:3px 10px;border-radius:20px;font-size:.75em;font-weight:600;color:#fff}
+.p-critical{background:#e74c3c}
+.p-high{background:#e67e22}
+.p-medium{background:#3498db}
+.p-low{background:#27ae60}
+.badge{padding:2px 8px;border-radius:12px;font-size:.7em;background:#e8f4f8;color:#0f3460;font-weight:600}
+.module-body{padding:0 24px 20px}
+.test-group{margin-top:16px}
+.test-group h3{font-size:1em;color:#333;padding:8px 0;border-bottom:1px solid #f0f0f0;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:.88em;margin-bottom:12px}
+th{background:#f4f6fc;text-align:left;padding:8px 10px;color:#0f3460;font-weight:600;border-bottom:2px solid #dde}
+td{padding:7px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+tr:hover{background:#fafbff}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:.75em;margin-right:4px}
+.tag-num{background:#fff3e0;color:#e65100}
+.tag-ui{background:#e8f5e9;color:#2e7d32}
+.tag-flow{background:#e3f2fd;color:#1565c0}
+.tag-val{background:#fce4ec;color:#c62828}
+.tag-sec{background:#f3e5f5;color:#6a1b9a}
+.legend{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-bottom:25px;font-size:.85em}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.toggle-arrow{font-size:1.2em;color:#999;transition:transform .2s}
+.open .toggle-arrow{transform:rotate(90deg)}
+.config-bar{background:#fff;border-radius:10px;padding:12px 20px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.88em}
+.config-bar input[type=text]{flex:1;min-width:200px;padding:6px 12px;border:1px solid #ddd;border-radius:6px;font-size:.85em}
+.config-bar button{padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.82em}
+.btn-connect{background:#0f3460;color:#fff}.btn-connect:hover{background:#1a4a8a}
+.btn-setup{background:#e8f4f8;color:#0f3460}.btn-setup:hover{background:#d0e8f0}
+.btn-reset{background:#fce4ec;color:#c62828;font-size:.75em}.btn-reset:hover{background:#f8c0c8}
+.conn-status{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:.72em;font-weight:600}
+.conn-ok{background:#e8f8e8;color:#27ae60}.conn-local{background:#fff3e0;color:#e65100}.conn-err{background:#fce4ec;color:#c62828}
+.overall-progress{background:#fff;border-radius:10px;padding:18px 24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.overall-progress h3{font-size:1em;color:#0f3460;margin-bottom:10px}
+.pbar-wrap{height:10px;background:#eee;border-radius:5px;overflow:hidden;display:flex;margin:6px 0}
+.pbar-c{background:#27ae60;height:100%;transition:width .4s}.pbar-a{background:#3498db;height:100%;transition:width .4s}
+.pstats{display:flex;gap:20px;font-size:.82em;color:#666;flex-wrap:wrap;margin-top:6px}
+.pstats span{display:flex;align-items:center;gap:5px}
+.pdot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.mod-prog{padding:4px 24px 8px}
+.mod-pbar{height:4px;background:#eee;border-radius:2px;overflow:hidden;display:flex}
+.mod-ptxt{font-size:.72em;color:#888;margin-top:3px}
+.status-hdr{text-align:center!important;width:32px;font-size:.72em;padding:8px 2px!important}
+.status-cell{text-align:center;width:32px;padding:4px 2px!important}
+.cb{width:16px;height:16px;cursor:pointer}.cb-completed{accent-color:#27ae60}.cb-approved{accent-color:#3498db}
+tr.row-done{background:#f0fff0!important}tr.row-ok{background:#e8f4fd!important}tr.row-done.row-ok{background:#e0f7e0!important}
+tr.row-done td:first-child{border-left:3px solid #27ae60}tr.row-ok td:first-child{border-left:3px solid #3498db}
+tr.row-done.row-ok td:first-child{border-left:3px solid #0f3460}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:1000}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:12px;padding:30px;max-width:720px;width:92%;max-height:85vh;overflow-y:auto}
+.modal h2{color:#0f3460;margin-bottom:15px}.modal h3{color:#333;margin:15px 0 8px}
+.modal pre{background:#1a1a2e;color:#e8e8e8;padding:15px;border-radius:8px;overflow-x:auto;font-size:.78em;line-height:1.5;white-space:pre-wrap}
+.modal ol{padding-left:20px}.modal ol li{margin-bottom:10px;line-height:1.5}
+.modal .x{float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#999}.modal .x:hover{color:#333}
+.sync-ind{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:20px;font-size:.8em;z-index:999;transition:opacity .3s;opacity:0;pointer-events:none}
+.sync-ind.on{opacity:1}.sync-sav{background:#fff3e0;color:#e65100}.sync-ok{background:#e8f8e8;color:#27ae60}.sync-err{background:#fce4ec;color:#c62828}
+.module-header{flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="config-bar">
+<label style="font-weight:600;white-space:nowrap">Google Sheets:</label>
+<input type="text" id="sheets-url" placeholder="URL del Web App de Google Apps Script...">
+<button class="btn-connect" onclick="QA.connect()">Conectar</button>
+<button class="btn-setup" onclick="QA.openModal()">Como configurar</button>
+<span id="conn-status" class="conn-status conn-local">Solo local</span>
+<button class="btn-reset" onclick="QA.resetAll()">Reset</button>
+</div>
+
+<h1>Plan de Pruebas QA - TrustMed Finanzas</h1>
+<p class="subtitle">Test Plan UI/UX Completo &mdash; Enfoque en Consistencia Numerica</p>
+
+<div class="overall-progress">
+<h3>Progreso General</h3>
+<div class="pbar-wrap">
+<div class="pbar-c" id="bar-c" style="width:0%"></div>
+<div class="pbar-a" id="bar-a" style="width:0%"></div>
+</div>
+<div class="pstats">
+<span><span class="pdot" style="background:#27ae60"></span> Completadas: <strong id="cnt-c">0</strong>/<strong id="cnt-t">0</strong> (<span id="pct-c">0%</span>)</span>
+<span><span class="pdot" style="background:#3498db"></span> Aprobadas: <strong id="cnt-a">0</strong>/<strong id="cnt-t2">0</strong> (<span id="pct-a">0%</span>)</span>
+<span><span class="pdot" style="background:#eee;border:1px solid #ccc"></span> Pendientes: <strong id="cnt-p">0</strong></span>
+</div>
+</div>
+
+<div class="stats-bar">
+<div class="stat-box"><div class="num">12</div><div class="label">Modulos</div></div>
+<div class="stat-box"><div class="num">187</div><div class="label">Casos de Prueba</div></div>
+<div class="stat-box"><div class="num">68</div><div class="label">Validaciones Numericas</div></div>
+<div class="stat-box"><div class="num">4</div><div class="label">Niveles Prioridad</div></div>
+</div>
+
+<div class="legend">
+<span><span class="dot" style="background:#fff3e0;border:1px solid #e65100"></span> Numerico</span>
+<span><span class="dot" style="background:#e8f5e9;border:1px solid #2e7d32"></span> UI/UX</span>
+<span><span class="dot" style="background:#e3f2fd;border:1px solid #1565c0"></span> Flujo</span>
+<span><span class="dot" style="background:#fce4ec;border:1px solid #c62828"></span> Validacion</span>
+<span><span class="dot" style="background:#f3e5f5;border:1px solid #6a1b9a"></span> Seguridad</span>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 1: AUTHENTICATION -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>1. Autenticacion y Registro</h2>
+<span class="priority p-critical">CRITICO</span>
+<span class="badge">15 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>1.1 Registro de Usuario</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>1.1.1</td><td>Registro exitoso</td><td>Completar formulario con datos validos: nombre, email, password, nombre consultorio, especialidad, ciudad</td><td>Usuario creado, redirige a login o wizard</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>1.1.2</td><td>Email duplicado</td><td>Intentar registrar con email ya existente</td><td>Mensaje de error claro, no se crea cuenta</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>1.1.3</td><td>Campos obligatorios vacios</td><td>Enviar formulario con campos requeridos vacios</td><td>Mensajes de validacion por cada campo</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>1.1.4</td><td>Password debil</td><td>Intentar password menor a requisito minimo</td><td>Error de validacion de password</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+<tr><td>1.1.5</td><td>Email formato invalido</td><td>Ingresar "abc@" o "noesmail"</td><td>Error de formato de email</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>1.2 Login</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>1.2.1</td><td>Login exitoso</td><td>Ingresar credenciales validas</td><td>Redirige a Dashboard, token guardado en localStorage</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>1.2.2</td><td>Credenciales incorrectas</td><td>Email correcto, password incorrecto</td><td>Mensaje de error generico (no revelar que campo falla)</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+<tr><td>1.2.3</td><td>Usuario inexistente</td><td>Email que no existe</td><td>Mismo mensaje generico de error</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+<tr><td>1.2.4</td><td>Token expiracion</td><td>Esperar 30+ min sin actividad, hacer request</td><td>Redirige a login automaticamente</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+<tr><td>1.2.5</td><td>Acceso rutas protegidas sin login</td><td>Navegar directamente a /dashboard sin token</td><td>Redirige a login</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>1.3 Sesion y Navegacion</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>1.3.1</td><td>Persistencia de sesion</td><td>Login, cerrar pestana, reabrir app</td><td>Sesion activa si token no ha expirado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>1.3.2</td><td>Logout</td><td>Click en boton logout</td><td>Token eliminado, redirige a login</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>1.3.3</td><td>Nombre usuario en sidebar</td><td>Verificar que sidebar muestre nombre del usuario logueado</td><td>Nombre correcto visible</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>1.3.4</td><td>Plan suscripcion visible</td><td>Verificar si muestra Free o Premium</td><td>Plan correcto del consultorio</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>1.3.5</td><td>Features premium bloqueadas para free</td><td>Usuario free intenta acceder a Pricing/TrustMap/Planes/Caja</td><td>PremiumOverlay visible, funcionalidad bloqueada</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 2: WIZARD -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>2. Wizard de Configuracion (5 pasos)</h2>
+<span class="priority p-critical">CRITICO</span>
+<span class="badge">22 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>2.1 Paso 1 - Datos Operativos</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>2.1.1</td><td>Campos operativos validos</td><td>Ingresar: horas/semana=40, dias laborales=5, tiempo consulta=30min, capacidad max=16</td><td>Datos guardados, avanza a paso siguiente</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>2.1.2</td><td>Coherencia horas vs capacidad</td><td>Si horas/semana=20, dias=5, tiempo consulta=60min &rarr; capacidad max deberia ser coherente (4/dia)</td><td>Capacidad no puede exceder (horas_dia * 60 / tiempo_consulta)</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.1.3</td><td>Valores cero o negativos</td><td>Ingresar 0 horas/semana</td><td>Validacion: no permite valores &le; 0</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>2.1.4</td><td>Valores extremos</td><td>Ingresar 168 horas/semana (24*7)</td><td>Acepta o muestra advertencia razonable</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>2.2 Paso 1B - Doctores</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>2.2.1</td><td>Agregar doctor</td><td>Nombre, especialidad, tarjeta profesional</td><td>Doctor agregado a la lista</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>2.2.2</td><td>Minimo un doctor</td><td>Intentar avanzar sin agregar doctor</td><td>Validacion: al menos 1 doctor requerido</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>2.2.3</td><td>Eliminar doctor</td><td>Agregar 2 doctores, eliminar 1</td><td>Solo queda 1 doctor en lista</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>2.3 Paso 2 - Costos Mensuales</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>2.3.1</td><td>Costos fijos completos</td><td>Ingresar: arriendo=3M, nomina=5M, servicios=500K, seguros=200K, mantenimiento=300K, otros=100K</td><td>Total fijos = 9,100,000 COP</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.3.2</td><td>Suma total costos fijos</td><td>Verificar que la suma mostrada = arriendo + nomina + servicios + seguros + mantenimiento + otros</td><td>Suma exacta sin errores de redondeo</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.3.3</td><td>Costos variables</td><td>Ingresar materiales medicos y medicamentos</td><td>Valores guardados correctamente</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>2.3.4</td><td>Costos personal</td><td>Ingresar costo hora doctor y costo hora enfermera</td><td>Valores COP positivos aceptados</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>2.3.5</td><td>Formato moneda en inputs</td><td>Al escribir "5000000" debe formatear como "$5,000,000"</td><td>CurrencyInput formatea correctamente</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>2.3.6</td><td>Valores cero permitidos</td><td>Dejar seguros=0 y mantenimiento=0</td><td>Acepta cero como valor valido</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>2.4 Paso 3 - Procedimientos y Tarifas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>2.4.1</td><td>Crear procedimiento con tarifas</td><td>Nombre="Consulta General", duracion=30min, costo material=5000, tarifa EPS=50000, Prepagada=80000, Particular=120000</td><td>Procedimiento creado con 3 tarifas</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>2.4.2</td><td>Tarifa mayor que costo material</td><td>Verificar que todas las tarifas > costo material del procedimiento</td><td>Tarifa siempre debe ser mayor que costo material para tener margen positivo</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.4.3</td><td>Minimo 2 procedimientos</td><td>Intentar avanzar con solo 1 procedimiento</td><td>Validacion requiere minimo 2</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>2.4.4</td><td>Duracion coherente</td><td>Duracion procedimiento no debe exceder horas laborales del dia</td><td>Advertencia si duracion es excesiva</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>2.5 Paso 4 - Resumen y Confirmacion</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>2.5.1</td><td>Capacidad mensual coherente</td><td>Con 8h/dia, 22 dias, 30min consulta &rarr; capacidad = (8*60/30)*22 = 352 pacientes/mes</td><td>Capacidad mostrada coincide con calculo manual</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.5.2</td><td>Ingreso minimo = total costos fijos</td><td>Verificar que ingreso minimo requerido &ge; suma de costos fijos mensuales</td><td>Ingreso minimo cubre todos los costos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.5.3</td><td>Punto equilibrio coherente</td><td>punto_equilibrio = costos_fijos / (ingreso_promedio_por_paciente - costo_variable_por_paciente)</td><td>Numero de pacientes razonable y coherente con capacidad</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.5.4</td><td>Punto equilibrio &lt; capacidad</td><td>Si punto equilibrio &gt; capacidad mensual, debe haber alerta</td><td>Alerta visual: "costos exceden capacidad de ingresos"</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>2.5.5</td><td>Confirmacion guarda todo</td><td>Click confirmar, verificar que datos persisten en configuracion</td><td>Todos los datos del wizard guardados en BD</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 3: INVOICES -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>3. Gestion de Facturas</h2>
+<span class="priority p-critical">CRITICO</span>
+<span class="badge">24 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>3.1 Carga Manual de Facturas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>3.1.1</td><td>Crear factura completa</td><td>Numero=F001, fecha=hoy, pagador=EPS Sura, procedimiento=Consulta, valor_facturado=80000, valor_pagado=65000</td><td>Factura creada, aparece en listado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>3.1.2</td><td>Copago auto-calculado</td><td>Verificar que copago_estimado = valor_facturado - valor_pagado (80000-65000=15000)</td><td>Copago = 15,000 COP exacto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.1.3</td><td>Pagado no excede facturado</td><td>Intentar valor_pagado=100000 con facturado=80000</td><td>Validacion: pagado &le; facturado</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>3.1.4</td><td>Valor minimo factura</td><td>Ingresar valor_facturado=500 (menor a 1000)</td><td>Validacion: minimo 1000 COP</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>3.1.5</td><td>Pagado puede ser cero</td><td>Factura con valor_pagado=0 (pendiente de pago)</td><td>Se permite, copago = valor_facturado completo</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.1.6</td><td>Fecha futura</td><td>Seleccionar fecha en el futuro</td><td>No debe permitir fechas futuras</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>3.1.7</td><td>Seleccion pagador</td><td>Dropdown muestra EPS, Prepagada, Particular</td><td>Todos los tipos pagador del consultorio disponibles</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>3.1.8</td><td>Seleccion procedimiento</td><td>Dropdown muestra procedimientos configurados en wizard</td><td>Procedimientos del consultorio listados</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>3.2 Listado de Facturas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>3.2.1</td><td>Paginacion correcta</td><td>Con 50 facturas, navegar entre paginas</td><td>Cada pagina muestra el numero correcto de items</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>3.2.2</td><td>Porcentaje pagado por factura</td><td>Factura: facturado=100K, pagado=75K &rarr; 75%</td><td>Muestra 75% con color amarillo (entre 70-89%)</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.2.3</td><td>Color semaforo correcto</td><td>Verificar: &ge;90%=verde, 70-89%=amarillo, &lt;70%=rojo</td><td>Colores corresponden a rangos</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>3.2.4</td><td>Editar factura</td><td>Modificar valor_pagado de factura existente</td><td>Valor actualizado, copago recalculado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>3.2.5</td><td>Eliminar factura</td><td>Eliminar factura, confirmar dialogo</td><td>Factura eliminada, listado actualizado, totales recalculados</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>3.2.6</td><td>Formato moneda en listado</td><td>Valores mostrados como "$80,000" (formato COP)</td><td>Formato Intl es-CO correcto sin decimales</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>3.3 Carga Masiva (Bulk Upload)</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>3.3.1</td><td>Upload archivo valido</td><td>Subir CSV/Excel con facturas correctas</td><td>Facturas importadas, contador actualizado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>3.3.2</td><td>Archivo con errores</td><td>CSV con filas invalidas (pagado &gt; facturado)</td><td>Reporte de errores por fila, filas validas importadas</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>3.3.3</td><td>Contador post-carga</td><td>Tener 10 facturas, importar 15 mas</td><td>Total = 25 facturas en listado</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>3.4 Nivel de Analisis</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>3.4.1</td><td>Insuficiente (&lt;20)</td><td>Tener 15 facturas</td><td>Barra roja "Insuficiente", porcentaje=(15/20)*100=75%</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.2</td><td>Normal (20-29)</td><td>Tener 25 facturas</td><td>Barra amarilla "Analisis Normal"</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.3</td><td>Bueno (30-49)</td><td>Tener 35 facturas</td><td>Barra azul "Analisis Bueno"</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.4</td><td>Excelente (&ge;50)</td><td>Tener 50+ facturas</td><td>Barra verde "Analisis Excelente"</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.5</td><td>Requisitos minimos</td><td>Verificar: &ge;20 facturas, &ge;3 tipos pagador, &ge;2 procedimientos, &ge;3 meses rango</td><td>Solo habilita analisis si TODOS se cumplen</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.6</td><td>Barra progreso visual</td><td>Con 25 facturas: barra = min((25/50)*100, 100) = 50%</td><td>Barra al 50% visual</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>3.4.7</td><td>Falta 1 requisito</td><td>20 facturas, 3 pagadores, 2 procedimientos pero solo 2 meses</td><td>No habilita analisis, indica que falta rango de fechas</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 4: DASHBOARD & ANALYTICS -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>4. Dashboard y Analitica Financiera</h2>
+<span class="priority p-critical">CRITICO</span>
+<span class="badge">30 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>4.1 KPIs Principales - Consistencia Numerica</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>4.1.1</td><td>Total facturado = suma facturas</td><td>Sumar manualmente valor_facturado de todas las facturas del rango</td><td>Total facturado en dashboard = suma manual</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.2</td><td>Total pagado = suma pagos</td><td>Sumar manualmente valor_pagado de todas las facturas</td><td>Total pagado en dashboard = suma manual</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.3</td><td>Total copagos = facturado - pagado</td><td>Verificar: total_copagos = total_facturado - total_pagado</td><td>Diferencia exacta sin errores de redondeo</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.4</td><td>Total recibido = pagado + copagos</td><td>Verificar: total_recibido = total_pagado + total_copagos</td><td>Suma exacta</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.5</td><td>Porcentaje cobro correcto</td><td>porcentaje_cobro = (total_pagado / total_facturado) * 100</td><td>Porcentaje calculado correctamente</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.6</td><td>Promedio factura</td><td>promedio = total_facturado / total_facturas</td><td>Promedio correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.7</td><td>Margen bruto total</td><td>margen = total_recibido - total_costos_materiales</td><td>Margen bruto correcto en COP</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.8</td><td>Porcentaje margen bruto</td><td>% = ((total_recibido - total_costos_materiales) / total_recibido) * 100</td><td>Porcentaje correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.1.9</td><td>Formato numeros grandes</td><td>Si valor &ge; 1M debe mostrar "1.5M", si &ge; 1B "1.2B"</td><td>Formato abreviado correcto</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>4.2 Consistencia Cruzada - Totales</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>4.2.1</td><td>Facturado por pagador = total</td><td>Sumar facturado de TODOS los pagadores en tabla</td><td>Suma = total_facturado del resumen superior</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.2.2</td><td>Pagado por pagador = total</td><td>Sumar pagado de TODOS los pagadores</td><td>Suma = total_pagado del resumen</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.2.3</td><td>Facturado por procedimiento = total</td><td>Sumar facturado de TODOS los procedimientos</td><td>Suma = total_facturado del resumen</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.2.4</td><td>Facturado mensual = total</td><td>Sumar facturado de TODOS los meses</td><td>Suma = total_facturado del resumen</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.2.5</td><td>Cantidad facturas por pagador = total</td><td>Sumar cantidad_facturas de cada pagador</td><td>Suma = total_facturas general</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.2.6</td><td>Cantidad por procedimiento = total</td><td>Sumar cantidad de cada procedimiento</td><td>Suma = total_facturas general</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>4.3 Analisis por Pagador</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>4.3.1</td><td>% cobro por pagador</td><td>Para cada pagador: (pagado/facturado)*100</td><td>Porcentaje correcto por cada fila</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.3.2</td><td>% participacion pagador</td><td>(pagador.pagado / total_pagado) * 100</td><td>Suma de todos los % = 100%</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.3.3</td><td>Diferencia por pagador</td><td>diferencia = facturado - pagado por pagador</td><td>Diferencia correcta por cada fila</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.3.4</td><td>Margen bruto por pagador</td><td>((recibido - costos_materiales) / recibido) * 100</td><td>% margen correcto por pagador</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>4.4 Margen Neto por Pagador</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>4.4.1</td><td>Costo tiempo proporcional</td><td>costo_tiempo = (% participacion / 100) * costos_fijos_totales</td><td>Asignacion proporcional correcta</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.4.2</td><td>Margen neto formula</td><td>margen_neto = ((revenue_mensual - costos_materiales_mensual - costos_fijos_asignados) / revenue_mensual) * 100</td><td>Porcentaje neto correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.4.3</td><td>Resultado mensual</td><td>resultado = revenue_mensual - costos_materiales_mensual - costo_tiempo</td><td>Valor en COP correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.4.4</td><td>Resultado anual = mensual * 12</td><td>Verificar resultado_anual = resultado_mensual * 12</td><td>Multiplicacion exacta</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>4.5 Alertas Inteligentes</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>4.5.1</td><td>Alerta pagador vampiro</td><td>Crear escenario donde margen neto de un pagador &lt; 0</td><td>Alerta roja con perdida anual calculada = |resultado_anual|</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.5.2</td><td>Alerta margen bajo</td><td>Pagador con margen neto entre 0% y 10%</td><td>Alerta naranja, impacto = (20-margen) * revenue_mensual / 100 * 12</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.5.3</td><td>Alerta cobro bajo</td><td>Pagador con % cobro &lt; 80%</td><td>Alerta con perdida = facturado - pagado, mensualizada y anualizada</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.5.4</td><td>Oportunidad pacientes particulares</td><td>Mix particular &lt; 30%</td><td>Calculo gap, facturas adicionales necesarias, ingreso potencial adicional</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.5.5</td><td>Mix particular = (particular_facturas / total) * 100</td><td>Verificar calculo del porcentaje actual de pacientes particulares</td><td>Porcentaje correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>4.5.6</td><td>Sin alertas si todo bien</td><td>Escenario ideal: margenes &gt; 10%, cobro &gt; 80%, particular &ge; 30%</td><td>No aparecen alertas o mensaje positivo</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>4.5.7</td><td>Orden de alertas por impacto</td><td>Con multiples alertas, verificar orden</td><td>Alertas ordenadas de mayor a menor impacto economico</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 5: REPORTS -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>5. Reportes y Exportacion</h2>
+<span class="priority p-high">ALTO</span>
+<span class="badge">16 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>5.1 Filtros de Fecha</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>5.1.1</td><td>Filtro rango personalizado</td><td>Seleccionar fecha inicio y fecha fin</td><td>Solo facturas dentro del rango seleccionado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>5.1.2</td><td>Totales cambian con filtro</td><td>Cambiar rango de fechas y verificar KPIs</td><td>Todos los totales recalculados para el rango</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.1.3</td><td>Rango sin datos</td><td>Seleccionar rango donde no hay facturas</td><td>Mensaje "Sin datos" o valores en cero, sin errores</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>5.1.4</td><td>Fecha inicio &gt; fecha fin</td><td>Poner inicio despues del fin</td><td>Validacion: no permite rango invalido</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>5.2 Tablas de Reportes</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>5.2.1</td><td>Reporte por pagador</td><td>Verificar que tabla por pagador muestra: nombre, facturado, pagado, copago, recibido, diferencia, % cobro, cantidad, costos materiales, margen</td><td>Todas las columnas con datos correctos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.2.2</td><td>Reporte por procedimiento</td><td>Verificar: nombre, facturado, pagado, diferencia, cantidad, promedio</td><td>promedio = facturado / cantidad por cada fila</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.2.3</td><td>Reporte mensual</td><td>Verificar: mes, facturado, pagado, diferencia, cantidad</td><td>diferencia = facturado - pagado por cada mes</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.2.4</td><td>Consistencia reportes vs dashboard</td><td>Mismo rango de fechas en ambos</td><td>Numeros identicos en reportes y dashboard</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>5.3 Graficos</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>5.3.1</td><td>Grafico barras mensual</td><td>Hover sobre barra de un mes</td><td>Tooltip muestra mismo valor que tabla mensual</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.3.2</td><td>Grafico pie pagadores</td><td>Verificar proporciones del pie chart</td><td>Proporciones corresponden a % participacion</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.3.3</td><td>Graficos responsivos</td><td>Redimensionar ventana del navegador</td><td>Graficos se adaptan sin perder datos</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>5.4 Exportacion PDF</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>5.4.1</td><td>Generar PDF</td><td>Click en exportar PDF</td><td>PDF descargado con todos los datos del reporte</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>5.4.2</td><td>PDF con rango filtrado</td><td>Filtrar rango, exportar</td><td>PDF contiene datos del rango seleccionado, no todos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.4.3</td><td>Numeros en PDF vs pantalla</td><td>Comparar cada numero del PDF con la pantalla</td><td>Todos los numeros identicos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>5.4.4</td><td>PDF sin datos</td><td>Intentar generar PDF sin facturas</td><td>Mensaje de error o PDF vacio controlado</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>5.4.5</td><td>Nombre archivo PDF</td><td>Verificar nombre descriptivo del archivo descargado</td><td>Nombre incluye rango de fechas o identificador</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 6: CASH MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>6. Caja (Gestion de Efectivo)</h2>
+<span class="priority p-high">ALTO</span>
+<span class="badge">22 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>6.1 Cuentas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>6.1.1</td><td>Crear cuenta</td><td>Crear cuenta tipo "Banco", nombre "Bancolombia", saldo inicial=5,000,000</td><td>Cuenta creada, saldo_actual = saldo_inicial</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>6.1.2</td><td>Balance total = suma saldos</td><td>Con 3 cuentas, verificar total</td><td>Balance total = sum(saldo_actual) de todas las cuentas</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.1.3</td><td>Tipos de cuenta</td><td>Crear: Efectivo, Banco, Tarjeta</td><td>Los 3 tipos aceptados</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>6.1.4</td><td>Cuenta principal</td><td>Marcar una cuenta como principal</td><td>Solo 1 cuenta puede ser principal</td><td><span class="tag tag-val">Validacion</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>6.2 Movimientos</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>6.2.1</td><td>Entrada actualiza saldo</td><td>Cuenta con saldo=5M, registrar entrada de 1M</td><td>Saldo nuevo = 6,000,000</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.2</td><td>Salida actualiza saldo</td><td>Cuenta con saldo=5M, registrar salida de 2M</td><td>Saldo nuevo = 3,000,000</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.3</td><td>Balance total se actualiza</td><td>Despues de movimiento, verificar balance total</td><td>Balance total recalculado correctamente</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.4</td><td>Entradas del mes</td><td>Crear 3 entradas en mes actual: 1M + 500K + 2M</td><td>Total entradas mes = 3,500,000</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.5</td><td>Salidas del mes</td><td>Crear 2 salidas en mes actual: 800K + 200K</td><td>Total salidas mes = 1,000,000</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.6</td><td>Flujo neto = entradas - salidas</td><td>Con entradas=3.5M y salidas=1M</td><td>Flujo neto = 2,500,000</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.2.7</td><td>Monto negativo no permitido</td><td>Intentar registrar movimiento con monto &le; 0</td><td>Validacion: monto debe ser positivo</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>6.2.8</td><td>Medio de pago requerido</td><td>Intentar crear movimiento sin medio de pago</td><td>Validacion: campo requerido</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>6.2.9</td><td>Vinculacion factura</td><td>Crear movimiento vinculado a factura existente</td><td>Factura_id guardado, referencia visible</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>6.3 Transferencias</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>6.3.1</td><td>Transferencia entre cuentas</td><td>Transferir 1M de Efectivo (saldo 5M) a Banco (saldo 3M)</td><td>Efectivo=4M, Banco=4M. Balance total sin cambio</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.3.2</td><td>Balance total no cambia</td><td>Verificar balance total antes y despues de transferencia</td><td>Balance total identico (suma cero)</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>6.3.3</td><td>Transferencia misma cuenta</td><td>Intentar transferir de cuenta A a cuenta A</td><td>No permitido o mensaje de error</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>6.3.4</td><td>Saldo insuficiente</td><td>Transferir 10M desde cuenta con saldo 5M</td><td>Error: saldo insuficiente</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>6.3.5</td><td>Movimientos generados</td><td>Despues de transferencia, verificar historial</td><td>1 salida en origen + 1 entrada en destino registrados</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 7: PRICING INTELLIGENCE -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>7. Pricing Intelligence</h2>
+<span class="priority p-high">ALTO</span>
+<span class="badge">14 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>7.1 Benchmarking</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>7.1.1</td><td>Diferencia precio vs mercado</td><td>Mi precio=80K, mercado promedio=100K &rarr; diferencia = ((80K-100K)/100K)*100 = -20%</td><td>Muestra -20% (por debajo del mercado)</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.1.2</td><td>Procedimiento sobre mercado</td><td>Mi precio=120K, mercado=100K &rarr; +20%</td><td>Muestra +20% con indicador visual diferente</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.1.3</td><td>Todos los procedimientos listados</td><td>Verificar que cada procedimiento configurado aparece</td><td>Lista completa de procedimientos con benchmark</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>7.1.4</td><td>Solo premium</td><td>Usuario free intenta acceder</td><td>PremiumOverlay bloquea contenido</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>7.2 Simulador de Precios</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>7.2.1</td><td>Escenario conservador</td><td>Cambiar precio de 80K a 100K, ver proyeccion conservadora</td><td>% cambio precio = +25%, mayor perdida de pacientes estimada</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.2.2</td><td>Escenario moderado</td><td>Mismo cambio, ver proyeccion moderada</td><td>Perdida pacientes moderada, revenue proyectado intermedio</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.2.3</td><td>Escenario optimista</td><td>Mismo cambio, ver proyeccion optimista</td><td>Minima perdida pacientes, mayor revenue proyectado</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.2.4</td><td>% cambio precio correcto</td><td>De 80K a 100K &rarr; ((100K-80K)/80K)*100 = 25%</td><td>Muestra exactamente +25%</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.2.5</td><td>Revenue change coherente</td><td>Verificar que revenue_change% = ((new_rev - old_rev) / old_rev) * 100</td><td>Porcentaje correcto</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.2.6</td><td>Conservador &lt; moderado &lt; optimista</td><td>Comparar revenue proyectado de los 3 escenarios</td><td>Conservador siempre &le; Moderado &le; Optimista</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>7.3 Recomendaciones</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>7.3.1</td><td>Recomendacion subir precio</td><td>Procedimiento significativamente bajo el mercado</td><td>Recomendacion de ajuste al alza con monto sugerido</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>7.3.2</td><td>Oportunidad anual estimada</td><td>Verificar calculo de oportunidad de ingreso extra</td><td>Oportunidad = (nuevo_precio - actual) * pacientes_estimados * 12</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>7.3.3</td><td>Sin recomendacion si precio ok</td><td>Precio alineado al mercado (&plusmn;5%)</td><td>No genera recomendacion o indica "precio alineado"</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>7.3.4</td><td>Estadisticas: percentil, media, mediana</td><td>Verificar que estadisticas usan formulas correctas</td><td>media = sum/n, mediana = valor central, percentil = posicion en distribucion</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 8: TRUSTMAP -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>8. TrustMap (Analisis Competitivo)</h2>
+<span class="priority p-medium">MEDIO</span>
+<span class="badge">12 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>8.1 Mapa y Filtros</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>8.1.1</td><td>Mapa carga correctamente</td><td>Abrir TrustMap</td><td>Mapa Leaflet visible con marcadores de doctores</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>8.1.2</td><td>Filtro por especialidad</td><td>Seleccionar una especialidad</td><td>Solo doctores de esa especialidad en mapa</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>8.1.3</td><td>Filtro por distancia</td><td>Cambiar radio de busqueda</td><td>Solo doctores dentro del radio seleccionado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>8.1.4</td><td>Filtro por rango de precio</td><td>Establecer min y max precio</td><td>Solo doctores con tarifa dentro del rango</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>8.1.5</td><td>Contador resultados</td><td>Verificar numero de doctores mostrados</td><td>Cantidad en panel = marcadores en mapa</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>8.2 Tarjetas y Estadisticas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>8.2.1</td><td>DoctorCard info completa</td><td>Click en marcador de mapa</td><td>Tarjeta muestra: nombre, especialidad, precio, ubicacion</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>8.2.2</td><td>Panel estadisticas</td><td>Verificar precio promedio, min, max de resultados filtrados</td><td>Promedio = sum(precios) / count. Min y Max correctos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>8.2.3</td><td>Estadisticas cambian con filtro</td><td>Cambiar filtro y verificar recalculo</td><td>Estadisticas recalculadas para nuevo subset</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>8.2.4</td><td>Sin resultados</td><td>Filtros muy restrictivos que no retornan datos</td><td>Mensaje "Sin resultados", no errores</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>8.3 Recomendaciones Competitivas</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>8.3.1</td><td>Recomendaciones generadas</td><td>Con datos suficientes, verificar panel de recomendaciones</td><td>Recomendaciones basadas en posicion competitiva</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>8.3.2</td><td>Premium requerido</td><td>Usuario free</td><td>Overlay de premium visible</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>8.3.3</td><td>Responsividad mapa</td><td>Resize de ventana, zoom in/out</td><td>Mapa responsive, controles funcionales</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 9: ACTION PLANS -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>9. Planes de Accion (IA)</h2>
+<span class="priority p-medium">MEDIO</span>
+<span class="badge">12 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>9.1 Generacion de Plan</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>9.1.1</td><td>Completar contexto</td><td>Llenar formulario de contexto (situacion actual, objetivo, restricciones)</td><td>Contexto guardado correctamente</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>9.1.2</td><td>Generar plan IA</td><td>Click generar plan, esperar respuesta</td><td>Plan generado con fases, milestones y tareas</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>9.1.3</td><td>Loading state</td><td>Mientras genera (puede tardar), verificar estado de carga</td><td>Spinner o progreso visible, no se congela la UI</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>9.1.4</td><td>Premium requerido</td><td>Usuario free intenta generar plan</td><td>Bloqueado por PremiumOverlay</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>9.2 Detalle del Plan</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>9.2.1</td><td>Fases ordenadas</td><td>Ver plan detallado</td><td>Fases en orden: Fase 0, 1, 2, 3...</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>9.2.2</td><td>Tareas por fase</td><td>Expandir cada fase</td><td>Tareas listadas con dependencias visibles</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>9.2.3</td><td>KPIs del plan</td><td>Verificar KPIs generados</td><td>KPIs coherentes con contexto ingresado</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>9.2.4</td><td>Progreso tareas</td><td>Marcar tareas como completadas</td><td>Progreso % se actualiza correctamente</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>9.3 Lista de Planes</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>9.3.1</td><td>Listado de planes</td><td>Navegar a Planes</td><td>Todos los planes generados visibles</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>9.3.2</td><td>Navegacion a detalle</td><td>Click en un plan de la lista</td><td>Redirige a PlanDetalle con datos correctos</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>9.3.3</td><td>Plan sin fases</td><td>Si generacion falla parcialmente</td><td>Mensaje de error o estado incompleto visible</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>9.3.4</td><td>Multiples planes</td><td>Generar 2+ planes</td><td>Ambos listados con fecha y estado</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 10: CONFIGURATION -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>10. Configuracion del Consultorio</h2>
+<span class="priority p-medium">MEDIO</span>
+<span class="badge">10 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>10.1 Visualizacion</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>10.1.1</td><td>Datos wizard reflejados</td><td>Abrir configuracion despues del wizard</td><td>Todos los datos del wizard visibles: horas, costos, procedimientos</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>10.1.2</td><td>Costos fijos correctos</td><td>Verificar que suma de costos = lo ingresado en wizard</td><td>Mismos montos sin alteracion</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>10.1.3</td><td>Procedimientos listados</td><td>Verificar lista de procedimientos con tarifas</td><td>Todos los procedimientos del wizard con sus tarifas</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>10.2 Edicion</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>10.2.1</td><td>Editar nombre consultorio</td><td>Cambiar nombre y guardar</td><td>Nombre actualizado en sidebar y configuracion</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>10.2.2</td><td>Editar costos fijos</td><td>Cambiar arriendo de 3M a 4M, guardar</td><td>Costo actualizado, recalcula totales dependientes</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>10.2.3</td><td>Editar tarifa procedimiento</td><td>Cambiar precio EPS de consulta de 50K a 60K</td><td>Nueva tarifa reflejada en analytics y pricing</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>10.2.4</td><td>Agregar procedimiento nuevo</td><td>Agregar procedimiento post-wizard</td><td>Nuevo procedimiento disponible en carga facturas</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>10.2.5</td><td>Eliminar procedimiento</td><td>Eliminar procedimiento sin facturas asociadas</td><td>Procedimiento eliminado de la lista</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>10.2.6</td><td>Eliminar procedimiento con facturas</td><td>Intentar eliminar procedimiento que tiene facturas</td><td>Error o advertencia: tiene facturas asociadas</td><td><span class="tag tag-val">Validacion</span></td></tr>
+<tr><td>10.2.7</td><td>Impacto en dashboard post-edicion</td><td>Editar costos, ir a dashboard</td><td>Dashboard refleja nuevos costos en margenes</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 11: UX GENERAL -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>11. UX General y Navegacion</h2>
+<span class="priority p-medium">MEDIO</span>
+<span class="badge">16 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>11.1 Sidebar y Layout</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>11.1.1</td><td>Todas las rutas accesibles</td><td>Click en cada item del sidebar</td><td>Cada pagina carga sin errores 404</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>11.1.2</td><td>Indicador ruta activa</td><td>Navegar a diferentes paginas</td><td>Item activo en sidebar resaltado visualmente</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.1.3</td><td>Responsive mobile</td><td>Ver app en pantalla 375px</td><td>Sidebar se colapsa, contenido legible</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.1.4</td><td>Responsive tablet</td><td>Ver app en pantalla 768px</td><td>Layout adaptado correctamente</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>11.2 Internacionalizacion</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>11.2.1</td><td>Cambiar idioma</td><td>Click en LanguageToggle</td><td>Toda la interfaz cambia de idioma</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.2.2</td><td>Persistencia idioma</td><td>Cambiar idioma, recargar pagina</td><td>Idioma seleccionado se mantiene</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>11.2.3</td><td>Formato moneda por idioma</td><td>Verificar formato COP en ambos idiomas</td><td>Formato numerico consistente (COP)</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>11.3 Manejo de Errores</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>11.3.1</td><td>API no disponible</td><td>Simular backend caido</td><td>Mensaje de error amigable, no pantalla blanca</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.3.2</td><td>Timeout de request</td><td>Simular respuesta lenta</td><td>Loading state visible, timeout manejado</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.3.3</td><td>Error 500 del servidor</td><td>Provocar error interno</td><td>Mensaje generico de error, no datos tecnicos expuestos</td><td><span class="tag tag-sec">Seguridad</span></td></tr>
+<tr><td>11.3.4</td><td>Division por cero</td><td>Escenario: 0 facturas, verificar porcentajes</td><td>No muestra NaN o Infinity, muestra 0% o N/A</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>11.3.5</td><td>Datos vacios en graficos</td><td>Dashboard sin facturas</td><td>Graficos vacios con mensaje, no errores JS</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>11.4 Performance y Usabilidad</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>11.4.1</td><td>Carga inicial dashboard</td><td>Login y carga del dashboard</td><td>Datos visibles en menos de 3 segundos</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.4.2</td><td>WhatsApp button visible</td><td>Verificar boton flotante de WhatsApp</td><td>Visible en todas las paginas, abre chat</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.4.3</td><td>Guia de uso accesible</td><td>Navegar a GuiaDeUso</td><td>Secciones cargadas: hero, quickstart, FAQ, glosario</td><td><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>11.4.4</td><td>Documentacion calculos</td><td>Navegar a DocumentacionCalculos</td><td>Formulas documentadas visibles</td><td><span class="tag tag-ui">UI</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 12: E2E SCENARIOS -->
+<!-- ============================================================ -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<span class="toggle-arrow">&#9654;</span>
+<h2>12. Escenarios End-to-End (Flujos Completos)</h2>
+<span class="priority p-critical">CRITICO</span>
+<span class="badge">14 casos</span>
+</div>
+<div class="module-body" style="display:none">
+
+<div class="test-group">
+<h3>12.1 Flujo Nuevo Usuario Completo</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>12.1.1</td><td>Registro &rarr; Wizard &rarr; Dashboard</td><td>1) Registrar usuario nuevo 2) Completar 5 pasos wizard 3) Ver dashboard</td><td>Dashboard muestra datos del wizard (capacidad, costos, punto equilibrio). Sin facturas aun</td><td><span class="tag tag-flow">Flujo</span></td></tr>
+<tr><td>12.1.2</td><td>Wizard &rarr; Cargar facturas &rarr; Analytics</td><td>1) Completar wizard 2) Cargar 25+ facturas (3+ pagadores, 2+ procedimientos, 3+ meses) 3) Ver dashboard</td><td>Dashboard muestra analytics completos con todos los KPIs calculados correctamente</td><td><span class="tag tag-flow">Flujo</span><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>12.2 Consistencia Numerica End-to-End</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>12.2.1</td><td>Agregar factura y verificar totales</td><td>1) Anotar totales actuales 2) Agregar factura de 100K facturado, 80K pagado 3) Verificar nuevos totales</td><td>total_facturado += 100K, total_pagado += 80K, copago += 20K. Todos los porcentajes recalculados</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.2.2</td><td>Eliminar factura y verificar totales</td><td>1) Anotar totales 2) Eliminar factura conocida 3) Verificar que totales disminuyen exactamente</td><td>Totales disminuyen por el monto exacto de la factura eliminada</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.2.3</td><td>Editar factura y verificar impacto</td><td>1) Cambiar valor_pagado de 80K a 90K 2) Verificar dashboard</td><td>total_pagado sube 10K, copago baja 10K, % cobro recalculado</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.2.4</td><td>Costos wizard impactan margenes</td><td>1) Cambiar arriendo en config de 3M a 5M 2) Ver dashboard</td><td>Margen neto baja por mayores costos fijos asignados</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+
+<div class="test-group">
+<h3>12.3 Escenarios de Datos Limite</h3>
+<table>
+<tr><th>#</th><th>Caso de Prueba</th><th>Pasos</th><th>Resultado Esperado</th><th>Tipo</th></tr>
+<tr><td>12.3.1</td><td>Dashboard con 1 sola factura</td><td>Cargar solo 1 factura</td><td>KPIs muestran datos de esa factura, sin division por cero, "Insuficiente" en nivel analisis</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.2</td><td>Todas facturas pagado=0</td><td>Cargar 20 facturas con pagado=0</td><td>% cobro = 0%, copago = total facturado. Sin errores</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.3</td><td>Todas facturas pagado=facturado</td><td>20 facturas con pago completo</td><td>% cobro = 100%, copago = 0, diferencia = 0</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.4</td><td>Facturas con montos muy altos</td><td>Factura de 999,999,999 COP</td><td>Formato correcto "1.0B", sin overflow visual</td><td><span class="tag tag-num">Numerico</span><span class="tag tag-ui">UI</span></td></tr>
+<tr><td>12.3.5</td><td>Un solo pagador</td><td>Todas facturas del mismo pagador</td><td>% participacion = 100%, sin division por cero en otros</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.6</td><td>Un solo procedimiento</td><td>Todas facturas mismo procedimiento</td><td>Promedio = facturado/cantidad correctamente</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.7</td><td>Todo en un solo mes</td><td>Todas facturas con misma fecha</td><td>Tabla mensual muestra 1 fila con totales correctos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+<tr><td>12.3.8</td><td>Factura minima 1000 COP</td><td>Crear factura por exactamente 1000 COP facturado</td><td>Aceptada, muestra "$1,000", porcentajes correctos</td><td><span class="tag tag-num">Numerico</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- SUMMARY -->
+<div style="background:#0f3460;color:#fff;border-radius:12px;padding:30px;margin-top:30px;text-align:center">
+<h2 style="margin-bottom:15px">Resumen del Plan de Pruebas</h2>
+<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:20px">
+<div><strong style="font-size:1.8em;display:block">187</strong>Casos totales</div>
+<div><strong style="font-size:1.8em;display:block">68</strong>Validaciones numericas</div>
+<div><strong style="font-size:1.8em;display:block">12</strong>Modulos cubiertos</div>
+</div>
+<table style="width:100%;max-width:700px;margin:0 auto;border-collapse:collapse;font-size:.9em">
+<tr style="border-bottom:1px solid rgba(255,255,255,.2)"><td style="padding:8px;text-align:left">Prioridad Critica (Auth, Wizard, Facturas, Dashboard, E2E)</td><td style="padding:8px;text-align:right"><strong>91 casos</strong></td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.2)"><td style="padding:8px;text-align:left">Prioridad Alta (Reportes, Caja, Pricing)</td><td style="padding:8px;text-align:right"><strong>52 casos</strong></td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.2)"><td style="padding:8px;text-align:left">Prioridad Media (TrustMap, Planes, Config, UX)</td><td style="padding:8px;text-align:right"><strong>50 casos</strong></td></tr>
+<tr><td style="padding:8px;text-align:left" colspan="2"><em>Enfoque principal: Consistencia numerica entre vistas, formulas correctas, totales cruzados</em></td></tr>
+</table>
+</div>
+
+</div>
+
+<!-- SETUP MODAL -->
+<div class="modal-bg" id="setup-modal">
+<div class="modal">
+<button class="x" onclick="QA.closeModal()">&times;</button>
+<h2>Configurar Google Sheets</h2>
+<p>Sigue estos pasos para conectar la persistencia con Google Sheets:</p>
+<ol>
+<li>Crea una nueva <strong>Google Spreadsheet</strong> en <a href="https://sheets.new" target="_blank">sheets.new</a></li>
+<li>Ve a <strong>Extensiones &gt; Apps Script</strong></li>
+<li>Borra todo el contenido y pega este codigo:</li>
+</ol>
+<pre id="apps-script-code">
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('QA_Status');
+  if (!sheet) return ContentService.createTextOutput('{}').setMimeType(ContentService.MimeType.JSON);
+  var data = sheet.getDataRange().getValues();
+  var result = {};
+  for (var i = 1; i &lt; data.length; i++) {
+    if (data[i][0]) {
+      result[data[i][0]] = {
+        completed: data[i][1] === true || data[i][1] === 'TRUE',
+        approved: data[i][2] === true || data[i][2] === 'TRUE',
+        cDate: data[i][3] || '',
+        aDate: data[i][4] || ''
+      };
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('QA_Status');
+  if (!sheet) {
+    sheet = ss.insertSheet('QA_Status');
+    sheet.appendRow(['TestID','Completed','Approved','CompletedDate','ApprovedDate']);
+    sheet.setFrozenRows(1);
+  }
+  var p = JSON.parse(e.postData.contents);
+  var data = sheet.getDataRange().getValues();
+  var row = -1;
+  for (var i = 1; i &lt; data.length; i++) {
+    if (data[i][0] === p.testId) { row = i + 1; break; }
+  }
+  if (row === -1) {
+    sheet.appendRow([p.testId, p.completed, p.approved, p.cDate, p.aDate]);
+  } else {
+    sheet.getRange(row, 2, 1, 4).setValues([[p.completed, p.approved, p.cDate, p.aDate]]);
+  }
+  return ContentService.createTextOutput('{"ok":true}').setMimeType(ContentService.MimeType.JSON);
+}
+</pre>
+<ol start="4">
+<li>Click en <strong>Implementar &gt; Nueva implementacion</strong></li>
+<li>Tipo: <strong>Aplicacion web</strong></li>
+<li>Ejecutar como: <strong>Yo</strong></li>
+<li>Quien tiene acceso: <strong>Cualquier persona</strong></li>
+<li>Click en <strong>Implementar</strong> y autoriza los permisos</li>
+<li>Copia la <strong>URL de la aplicacion web</strong> y pegala arriba en el campo "Google Sheets"</li>
+</ol>
+<button class="btn-setup" onclick="QA.copyScript()" style="margin-top:10px">Copiar codigo Apps Script</button>
+<p style="margin-top:15px;font-size:.85em;color:#666"><strong>Nota:</strong> Los datos tambien se guardan localmente en tu navegador como respaldo.</p>
+</div>
+</div>
+
+<!-- SYNC INDICATOR -->
+<div class="sync-ind" id="sync-ind"></div>
+
+<script>
+var QA = (function() {
+  var CFG_KEY = 'qa_tm_cfg';
+  var DAT_KEY = 'qa_tm_dat';
+  var cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
+  var dat = JSON.parse(localStorage.getItem(DAT_KEY) || '{}');
+  var syncTimer;
+
+  function init() {
+    enhanceTables();
+    injectModProgress();
+    var urlInput = document.getElementById('sheets-url');
+    if (cfg.url) urlInput.value = cfg.url;
+    loadData().then(function() {
+      applyStates();
+      calcProgress();
+    });
+    // expand all on dblclick title
+    document.querySelector('h1').addEventListener('dblclick', function() {
+      document.querySelectorAll('.module-body').forEach(function(el) {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      });
+      document.querySelectorAll('.module').forEach(function(el) {
+        el.classList.toggle('open');
+      });
+    });
+  }
+
+  function enhanceTables() {
+    document.querySelectorAll('.test-group table').forEach(function(table) {
+      var hdr = table.querySelector('tr');
+      if (!hdr) return;
+      var thC = document.createElement('th');
+      thC.className = 'status-hdr'; thC.title = 'Completada'; thC.innerHTML = '&#10003;';
+      var thA = document.createElement('th');
+      thA.className = 'status-hdr'; thA.title = 'Aprobada'; thA.innerHTML = '&#10003;&#10003;';
+      hdr.appendChild(thC); hdr.appendChild(thA);
+
+      var rows = table.querySelectorAll('tr:not(:first-child)');
+      rows.forEach(function(row) {
+        var cell = row.querySelector('td');
+        if (!cell) return;
+        var id = cell.textContent.trim();
+
+        var tdC = document.createElement('td'); tdC.className = 'status-cell';
+        var cbC = document.createElement('input');
+        cbC.type = 'checkbox'; cbC.className = 'cb cb-completed'; cbC.dataset.test = id;
+        cbC.title = 'Completada';
+        cbC.addEventListener('change', function() { onCb(id, 'completed', cbC.checked, row); });
+        tdC.appendChild(cbC);
+
+        var tdA = document.createElement('td'); tdA.className = 'status-cell';
+        var cbA = document.createElement('input');
+        cbA.type = 'checkbox'; cbA.className = 'cb cb-approved'; cbA.dataset.test = id;
+        cbA.title = 'Aprobada';
+        cbA.addEventListener('change', function() { onCb(id, 'approved', cbA.checked, row); });
+        tdA.appendChild(cbA);
+
+        row.appendChild(tdC); row.appendChild(tdA);
+      });
+    });
+  }
+
+  function injectModProgress() {
+    document.querySelectorAll('.module').forEach(function(mod) {
+      var hdr = mod.querySelector('.module-header');
+      var body = mod.querySelector('.module-body');
+      if (!hdr || !body) return;
+      var d = document.createElement('div'); d.className = 'mod-prog';
+      d.innerHTML = '<div class="mod-pbar"><div class="pbar-c" style="width:0%"></div><div class="pbar-a" style="width:0%"></div></div><div class="mod-ptxt">0 completados | 0 aprobados</div>';
+      mod.insertBefore(d, body);
+    });
+  }
+
+  function onCb(id, type, checked, row) {
+    if (!dat[id]) dat[id] = {};
+    if (type === 'approved' && checked) {
+      dat[id].completed = true;
+      dat[id].cDate = dat[id].cDate || new Date().toISOString();
+      var cc = row.querySelector('.cb-completed'); if (cc) cc.checked = true;
+    }
+    if (type === 'completed' && !checked) {
+      dat[id].approved = false; dat[id].aDate = '';
+      var ca = row.querySelector('.cb-approved'); if (ca) ca.checked = false;
+    }
+    dat[id][type] = checked;
+    var dKey = type === 'completed' ? 'cDate' : 'aDate';
+    dat[id][dKey] = checked ? new Date().toISOString() : '';
+    styleRow(row, dat[id]);
+    calcProgress();
+    saveLocal();
+    saveToSheets(id);
+  }
+
+  function styleRow(row, d) {
+    row.classList.toggle('row-done', !!d.completed);
+    row.classList.toggle('row-ok', !!d.approved);
+  }
+
+  function applyStates() {
+    Object.keys(dat).forEach(function(id) {
+      var d = dat[id];
+      var cc = document.querySelector('.cb-completed[data-test="' + id + '"]');
+      var ca = document.querySelector('.cb-approved[data-test="' + id + '"]');
+      if (cc) cc.checked = !!d.completed;
+      if (ca) ca.checked = !!d.approved;
+      var row = cc ? cc.closest('tr') : null;
+      if (row) styleRow(row, d);
+    });
+  }
+
+  function calcProgress() {
+    var tAll = 0, cAll = 0, aAll = 0;
+    document.querySelectorAll('.module').forEach(function(mod) {
+      var cbs = mod.querySelectorAll('.cb-completed');
+      var abs = mod.querySelectorAll('.cb-approved');
+      var t = cbs.length;
+      var c = [].slice.call(cbs).filter(function(x) { return x.checked; }).length;
+      var a = [].slice.call(abs).filter(function(x) { return x.checked; }).length;
+      tAll += t; cAll += c; aAll += a;
+      var bar = mod.querySelector('.mod-prog .mod-pbar');
+      if (bar && t > 0) {
+        bar.querySelector('.pbar-c').style.width = (c / t * 100) + '%';
+        bar.querySelector('.pbar-a').style.width = (a / t * 100) + '%';
+      }
+      var txt = mod.querySelector('.mod-ptxt');
+      if (txt) txt.textContent = c + '/' + t + ' completados | ' + a + '/' + t + ' aprobados';
+    });
+    setText('cnt-c', cAll); setText('cnt-a', aAll);
+    setText('cnt-t', tAll); setText('cnt-t2', tAll);
+    setText('cnt-p', tAll - cAll);
+    if (tAll > 0) {
+      var pc = Math.round(cAll / tAll * 100);
+      var pa = Math.round(aAll / tAll * 100);
+      setText('pct-c', pc + '%'); setText('pct-a', pa + '%');
+      setWidth('bar-c', pc + '%'); setWidth('bar-a', pa + '%');
+    }
+  }
+
+  function setText(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+  function setWidth(id, v) { var e = document.getElementById(id); if (e) e.style.width = v; }
+
+  function saveLocal() { localStorage.setItem(DAT_KEY, JSON.stringify(dat)); }
+
+  function loadData() {
+    return new Promise(function(resolve) {
+      if (cfg.url) {
+        showSync('sav', 'Cargando...');
+        fetch(cfg.url).then(function(r) { return r.json(); }).then(function(d) {
+          dat = d; saveLocal();
+          setConn('ok'); showSync('ok', 'Sincronizado');
+          resolve();
+        }).catch(function() {
+          setConn('err'); showSync('err', 'Error conexion');
+          resolve();
+        });
+      } else {
+        setConn('local'); resolve();
+      }
+    });
+  }
+
+  function saveToSheets(id) {
+    if (!cfg.url) return;
+    showSync('sav', 'Guardando...');
+    fetch(cfg.url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ testId: id, completed: dat[id].completed, approved: dat[id].approved, cDate: dat[id].cDate || '', aDate: dat[id].aDate || '' })
+    }).then(function() {
+      showSync('ok', 'Guardado');
+    }).catch(function() {
+      showSync('err', 'Error al guardar');
+    });
+  }
+
+  function setConn(s) {
+    var e = document.getElementById('conn-status');
+    if (!e) return;
+    e.className = 'conn-status conn-' + s;
+    var l = { ok: 'Sheets conectado', local: 'Solo local', err: 'Error conexion' };
+    e.textContent = l[s] || s;
+  }
+
+  function showSync(type, txt) {
+    var e = document.getElementById('sync-ind');
+    if (!e) return;
+    e.className = 'sync-ind sync-' + type + ' on';
+    e.textContent = txt;
+    clearTimeout(syncTimer);
+    if (type !== 'sav') syncTimer = setTimeout(function() { e.classList.remove('on'); }, 2000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+
+  return {
+    connect: function() {
+      var url = document.getElementById('sheets-url').value.trim();
+      cfg.url = url;
+      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+      loadData().then(function() { applyStates(); calcProgress(); });
+    },
+    openModal: function() { document.getElementById('setup-modal').classList.add('show'); },
+    closeModal: function() { document.getElementById('setup-modal').classList.remove('show'); },
+    copyScript: function() {
+      var code = document.getElementById('apps-script-code').textContent;
+      code = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+      navigator.clipboard.writeText(code).then(function() { alert('Codigo copiado al portapapeles!'); });
+    },
+    resetAll: function() {
+      if (confirm('Borrar todo el progreso local?')) {
+        dat = {}; localStorage.removeItem(DAT_KEY);
+        document.querySelectorAll('.cb').forEach(function(c) { c.checked = false; });
+        document.querySelectorAll('tr').forEach(function(r) { r.classList.remove('row-done', 'row-ok'); });
+        calcProgress();
+      }
+    }
+  };
+})();
+</script>
+</body>
+</html>
